@@ -65,8 +65,10 @@ const SelectableArea = ({
       onStart={onStart}
       onMove={onMove}
       selectables=".selectable"
-      deps={[uniqueBoxids]}
+      // boundaries={`.container.${className}`}
+      // deps={[uniqueBoxids]}
     >
+      {/* <div className={`container ${className}`}> */}
       {uniqueBoxids.map((id) => (
         <div
           className={selected.has(id) ? "selected selectable" : "selectable"}
@@ -74,6 +76,7 @@ const SelectableArea = ({
           key={id}
         />
       ))}
+      {/* </div> */}
     </SelectionArea>
   );
 };

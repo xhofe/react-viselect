@@ -2,6 +2,7 @@ import VanillaSelectionArea from "@viselect/vanilla";
 import type {
   SelectionEvents,
   PartialSelectionOptions,
+  SelectionEvent,
 } from "@viselect/vanilla";
 import React, {
   useEffect,
@@ -9,6 +10,7 @@ import React, {
   useContext,
   useRef,
   useState,
+  useEffectEvent,
 } from "react";
 
 export interface SelectionAreaProps
@@ -37,36 +39,51 @@ export const SelectionArea: React.FunctionComponent<SelectionAreaProps> = (
     undefined
   );
   const root = useRef<HTMLDivElement>(null);
+  const {
+    boundaries = root.current,
+    onBeforeStart,
+    onBeforeDrag,
+    onStart,
+    onMove,
+    onStop,
+    deps = [],
+    ...opt
+  } = props;
+
+  const eventOnBeforeStart = useEffectEvent((evt: SelectionEvent) => {
+    onBeforeStart?.(evt);
+  });
+  const eventOnBeforeDrag = useEffectEvent((evt: SelectionEvent) => {
+    onBeforeDrag?.(evt);
+  });
+  const eventOnStart = useEffectEvent((evt: SelectionEvent) => {
+    onStart?.(evt);
+  });
+  const eventOnMove = useEffectEvent((evt: SelectionEvent) => {
+    onMove?.(evt);
+  });
+  const eventOnStop = useEffectEvent((evt: SelectionEvent) => {
+    onStop?.(evt);
+  });
 
   useEffect(() => {
-    /* eslint-disable @typescript-eslint/no-unused-vars */
-    const {
-      boundaries = root.current,
-      onBeforeStart,
-      onBeforeDrag,
-      onStart,
-      onMove,
-      onStop,
-      ...opt
-    } = props;
-
     const selection = new VanillaSelectionArea({
       boundaries: boundaries as HTMLElement,
       ...opt,
     });
 
-    selection.on("beforestart", (evt) => onBeforeStart?.(evt));
-    selection.on("beforedrag", (evt) => onBeforeDrag?.(evt));
-    selection.on("start", (evt) => onStart?.(evt));
-    selection.on("move", (evt) => onMove?.(evt));
-    selection.on("stop", (evt) => onStop?.(evt));
+    selection.on("beforestart", eventOnBeforeStart);
+    selection.on("beforedrag", eventOnBeforeDrag);
+    selection.on("start", eventOnStart);
+    selection.on("move", eventOnMove);
+    selection.on("stop", eventOnStop);
 
     setInstance(selection);
     return () => {
       selection.destroy();
       setInstance(undefined);
     };
-  }, props.deps ?? []);
+  }, [...deps, boundaries]);
 
   return (
     <SelectionContext.Provider value={instance}>
