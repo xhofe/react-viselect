@@ -50,21 +50,15 @@ export const SelectionArea: React.FunctionComponent<SelectionAreaProps> = (
     ...opt
   } = props;
 
-  const eventOnBeforeStart = useEffectEvent((evt: SelectionEvent) => {
-    onBeforeStart?.(evt);
-  });
-  const eventOnBeforeDrag = useEffectEvent((evt: SelectionEvent) => {
-    onBeforeDrag?.(evt);
-  });
-  const eventOnStart = useEffectEvent((evt: SelectionEvent) => {
-    onStart?.(evt);
-  });
-  const eventOnMove = useEffectEvent((evt: SelectionEvent) => {
-    onMove?.(evt);
-  });
-  const eventOnStop = useEffectEvent((evt: SelectionEvent) => {
-    onStop?.(evt);
-  });
+  const eventOnBeforeStart = useEffectEvent((evt: SelectionEvent) =>
+    onBeforeStart?.(evt)
+  );
+  const eventOnBeforeDrag = useEffectEvent((evt: SelectionEvent) =>
+    onBeforeDrag?.(evt)
+  );
+  const eventOnStart = useEffectEvent((evt: SelectionEvent) => onStart?.(evt));
+  const eventOnMove = useEffectEvent((evt: SelectionEvent) => onMove?.(evt));
+  const eventOnStop = useEffectEvent((evt: SelectionEvent) => onStop?.(evt));
 
   useEffect(() => {
     const selection = new VanillaSelectionArea({
